@@ -1,0 +1,349 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import { policies, site } from '../data/site';
+---
+<Layout title="Teklif Al" description="Birkaç dakikada sigorta teklifinizi alın. Sigorta türünü seçin, bilgilerinizi girin, 20+ şirketin teklifini karşılaştıralım.">
+  <section class="relative overflow-hidden bg-navy-900">
+    <div class="bg-grid absolute inset-0 opacity-25"></div>
+    <span class="absolute -right-20 -top-16 h-80 w-80 rounded-full bg-trust-500/15 blur-3xl"></span>
+    <div class="container-x relative py-14 sm:py-16">
+      <nav class="flex items-center gap-2 text-sm text-navy-300" aria-label="breadcrumb">
+        <a href="/" class="hover:text-white">Ana Sayfa</a><span>/</span><span class="text-white">Teklif Al</span>
+      </nav>
+      <h1 class="mt-4 font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl">Ücretsiz teklif alın</h1>
+      <p class="mt-3 max-w-xl text-lg text-navy-200">3 kısa adımda bilgilerinizi paylaşın, size en uygun teklifleri sunalım.</p>
+    </div>
+  </section>
+
+  <section class="container-x py-12 sm:py-16">
+    <div class="mx-auto max-w-3xl">
+      <!-- Stepper -->
+      <ol class="mb-10 flex items-center justify-between gap-2" data-stepper>
+        {[
+          { n: 1, label: 'Sigorta Türü' },
+          { n: 2, label: 'Detay Bilgiler' },
+          { n: 3, label: 'İletişim' },
+        ].map((s, i) => (
+          <li class="flex flex-1 items-center gap-2" data-step-indicator={s.n}>
+            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 text-sm font-bold transition-colors" data-step-dot>
+              {s.n}
+            </span>
+            <span class="hidden text-sm font-medium text-navy-900/70 sm:block" data-step-label>{s.label}</span>
+            {i < 2 && <span class="h-0.5 flex-1 rounded bg-navy-100" data-step-line></span>}
+          </li>
+        ))}
+      </ol>
+
+      <form id="quote-form" novalidate class="rounded-3xl border border-navy-100 bg-white p-6 shadow-card sm:p-8">
+        <!-- STEP 1: Insurance type -->
+        <fieldset data-panel="1">
+          <legend class="font-display text-xl font-bold text-navy-900">Hangi sigortaya teklif istiyorsunuz?</legend>
+          <p class="mt-1 text-sm text-navy-900/55">Bir tür seçin, devam edin.</p>
+          <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {policies.map((p) => (
+              <label class="group relative cursor-pointer">
+                <input type="radio" name="tur" value={p.slug} class="peer sr-only" required />
+                <span class="flex h-full items-center gap-3 rounded-xl border border-navy-100 bg-white p-4 transition-all peer-checked:border-trust-500 peer-checked:bg-trust-50 peer-checked:ring-2 peer-checked:ring-trust-500/20 hover:border-navy-200">
+                  <span class:list={['grid h-10 w-10 shrink-0 place-items-center rounded-lg', p.accent === 'trust' ? 'bg-trust-50 text-trust-600' : 'bg-navy-50 text-navy-700']}>
+                    <Icon name={p.icon} class="h-5 w-5" />
+                  </span>
+                  <span class="text-sm font-semibold text-navy-900">{p.title}</span>
+                  <span class="ml-auto hidden text-trust-600 peer-checked:block"><Icon name="check" class="h-5 w-5" /></span>
+                </span>
+              </label>
+            ))}
+          </div>
+          <p class="mt-2 hidden text-sm font-medium text-red-600" data-error="tur">Lütfen bir sigorta türü seçin.</p>
+        </fieldset>
+
+        <!-- STEP 2: Detail info (dynamic per category) -->
+        <fieldset data-panel="2" hidden>
+          <legend class="font-display text-xl font-bold text-navy-900">Detay bilgiler</legend>
+          <p class="mt-1 text-sm text-navy-900/55" data-detail-hint>Seçtiğiniz türe göre birkaç bilgi.</p>
+
+          <!-- Vehicle (trafik, kasko) -->
+          <div class="mt-6 grid gap-4 sm:grid-cols-2" data-group="vehicle" hidden>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="plaka">Plaka</label>
+              <input id="plaka" name="plaka" type="text" placeholder="34 ABC 123" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req data-group-field="vehicle" />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Bu alan zorunludur.</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="marka">Marka / Model</label>
+              <input id="marka" name="marka" type="text" placeholder="Örn. Volkswagen Golf" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req data-group-field="vehicle" />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Bu alan zorunludur.</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="model-yili">Model yılı</label>
+              <input id="model-yili" name="model_yili" type="number" min="1990" max="2026" placeholder="2021" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req data-group-field="vehicle" />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Geçerli bir yıl girin.</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="kullanim">Kullanım amacı</label>
+              <select id="kullanim" name="kullanim" class="mt-1.5 w-full rounded-xl border border-navy-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-group-field="vehicle">
+                <option value="hususi">Hususi</option>
+                <option value="ticari">Ticari</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Home (konut, dask) -->
+          <div class="mt-6 grid gap-4 sm:grid-cols-2" data-group="home" hidden>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="il">İl / İlçe</label>
+              <input id="il" name="il" type="text" placeholder="İstanbul / Kadıköy" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req data-group-field="home" />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Bu alan zorunludur.</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="metrekare">Brüt metrekare</label>
+              <input id="metrekare" name="metrekare" type="number" min="20" max="2000" placeholder="120" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req data-group-field="home" />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Geçerli bir değer girin.</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="bina-yili">Bina yaşı</label>
+              <select id="bina-yili" name="bina_yili" class="mt-1.5 w-full rounded-xl border border-navy-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-group-field="home">
+                <option value="0-5">0-5 yıl</option>
+                <option value="5-15">5-15 yıl</option>
+                <option value="15+">15 yıl ve üzeri</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="sahiplik">Sahiplik durumu</label>
+              <select id="sahiplik" name="sahiplik" class="mt-1.5 w-full rounded-xl border border-navy-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-group-field="home">
+                <option value="ev-sahibi">Ev sahibi</option>
+                <option value="kiraci">Kiracı</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Business (isyeri) -->
+          <div class="mt-6 grid gap-4 sm:grid-cols-2" data-group="business" hidden>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="isyeri-turu">İşyeri türü</label>
+              <input id="isyeri-turu" name="isyeri_turu" type="text" placeholder="Örn. Mağaza, ofis, depo" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req data-group-field="business" />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Bu alan zorunludur.</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="faaliyet">Faaliyet alanı</label>
+              <input id="faaliyet" name="faaliyet" type="text" placeholder="Örn. Perakende, üretim" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req data-group-field="business" />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Bu alan zorunludur.</p>
+            </div>
+          </div>
+
+          <!-- Person (saglik, hayat) -->
+          <div class="mt-6 grid gap-4 sm:grid-cols-2" data-group="person" hidden>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="dogum">Doğum tarihi</label>
+              <input id="dogum" name="dogum" type="date" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req data-group-field="person" />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Bu alan zorunludur.</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="kapsam">Kapsam</label>
+              <select id="kapsam" name="kapsam" class="mt-1.5 w-full rounded-xl border border-navy-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-group-field="person">
+                <option value="bireysel">Bireysel</option>
+                <option value="aile">Aile</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <label class="text-sm font-medium text-navy-900" for="not">Eklemek istedikleriniz (opsiyonel)</label>
+            <textarea id="not" name="not" rows="3" placeholder="İhtiyaçlarınızı kısaca belirtebilirsiniz." class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500"></textarea>
+          </div>
+        </fieldset>
+
+        <!-- STEP 3: Contact -->
+        <fieldset data-panel="3" hidden>
+          <legend class="font-display text-xl font-bold text-navy-900">İletişim bilgileriniz</legend>
+          <p class="mt-1 text-sm text-navy-900/55">Teklifi size nasıl ileteceğimizi bilelim.</p>
+          <div class="mt-6 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="ad">Ad Soyad</label>
+              <input id="ad" name="ad" type="text" placeholder="Adınız Soyadınız" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req data-contact />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Lütfen adınızı girin.</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="tel">Telefon</label>
+              <input id="tel" name="tel" type="tel" placeholder="05XX XXX XX XX" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req data-contact data-phone />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Geçerli bir telefon girin.</p>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="text-sm font-medium text-navy-900" for="eposta">E-posta</label>
+              <input id="eposta" name="eposta" type="email" placeholder="ornek@eposta.com" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req data-contact data-email />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Geçerli bir e-posta girin.</p>
+            </div>
+          </div>
+          <label class="mt-5 flex items-start gap-3 text-sm text-navy-900/70">
+            <input type="checkbox" name="kvkk" class="mt-0.5 h-5 w-5 rounded border-navy-300 text-trust-600 focus:ring-trust-500" data-req data-contact />
+            <span><a href="#" class="font-medium text-trust-600 hover:underline">KVKK aydınlatma metnini</a> okudum, bilgilerimin teklif amacıyla işlenmesini onaylıyorum.</span>
+          </label>
+          <p class="mt-1 hidden text-xs font-medium text-red-600" data-error="kvkk">Devam etmek için onay gereklidir.</p>
+        </fieldset>
+
+        <!-- Success -->
+        <div data-panel="success" hidden class="py-8 text-center">
+          <span class="mx-auto grid h-16 w-16 place-items-center rounded-full bg-trust-50 text-trust-600">
+            <Icon name="shield-check" class="h-9 w-9" />
+          </span>
+          <h3 class="mt-5 font-display text-2xl font-bold text-navy-900">Teklif talebiniz alındı!</h3>
+          <p class="mx-auto mt-2 max-w-md text-navy-900/60">Uzman danışmanımız en kısa sürede sizinle iletişime geçip karşılaştırmalı teklifleri paylaşacak. Bu bir demo formudur — bilgiler kaydedilmez.</p>
+          <a href="/" class="mt-6 inline-flex items-center gap-2 rounded-xl bg-navy-700 px-6 py-3 font-semibold text-white transition-colors hover:bg-navy-800">Ana sayfaya dön</a>
+        </div>
+
+        <!-- Nav buttons -->
+        <div class="mt-8 flex items-center justify-between gap-3" data-form-nav>
+          <button type="button" class="inline-flex items-center gap-2 rounded-xl border border-navy-200 px-5 py-3 text-sm font-semibold text-navy-800 transition-colors hover:bg-navy-50 disabled:opacity-40" data-prev disabled>
+            <Icon name="arrow" class="h-4 w-4 rotate-180" /> Geri
+          </button>
+          <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-trust-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-trust-600" data-next>
+            Devam et <Icon name="arrow-right" class="h-4 w-4" />
+          </button>
+          <button type="submit" class="hidden items-center gap-2 rounded-xl bg-trust-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-trust-600" data-submit>
+            Teklifi Gönder <Icon name="check" class="h-4 w-4" />
+          </button>
+        </div>
+      </form>
+
+      <p class="mt-6 text-center text-sm text-navy-900/55">
+        Telefonla mı tercih edersiniz? <a href={site.phoneHref} class="font-semibold text-trust-600 hover:underline">{site.phone}</a>
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const form = document.getElementById('quote-form') as HTMLFormElement;
+  if (form) {
+    // map insurance type -> detail group
+    const groupMap: Record<string, string> = {
+      trafik: 'vehicle', kasko: 'vehicle',
+      konut: 'home', dask: 'home',
+      isyeri: 'business',
+      saglik: 'person', hayat: 'person',
+    };
+    const groupHints: Record<string, string> = {
+      vehicle: 'Aracınıza dair birkaç bilgi alalım.',
+      home: 'Konutunuza dair birkaç bilgi alalım.',
+      business: 'İşyerinize dair birkaç bilgi alalım.',
+      person: 'Sigortalanacak kişiye dair birkaç bilgi alalım.',
+    };
+
+    let step = 1;
+    const maxStep = 3;
+    const panels = (n: number | string) => form.querySelector(`[data-panel="${n}"]`) as HTMLElement;
+    const prevBtn = form.querySelector('[data-prev]') as HTMLButtonElement;
+    const nextBtn = form.querySelector('[data-next]') as HTMLButtonElement;
+    const submitBtn = form.querySelector('[data-submit]') as HTMLButtonElement;
+
+    function activeGroup(): string | null {
+      const tur = (form.querySelector('input[name="tur"]:checked') as HTMLInputElement)?.value;
+      return tur ? groupMap[tur] ?? null : null;
+    }
+
+    function showStep(n: number) {
+      for (let i = 1; i <= maxStep; i++) panels(i).hidden = i !== n;
+      // stepper visual
+      document.querySelectorAll('[data-step-indicator]').forEach((li) => {
+        const idx = parseInt((li as HTMLElement).dataset.stepIndicator!);
+        const dot = li.querySelector('[data-step-dot]') as HTMLElement;
+        const line = li.querySelector('[data-step-line]') as HTMLElement | null;
+        dot.className = 'grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 text-sm font-bold transition-colors ' +
+          (idx < n ? 'border-trust-500 bg-trust-500 text-white'
+           : idx === n ? 'border-trust-500 text-trust-600'
+           : 'border-navy-200 text-navy-400');
+        if (line) line.className = 'h-0.5 flex-1 rounded ' + (idx < n ? 'bg-trust-500' : 'bg-navy-100');
+      });
+      prevBtn.disabled = n === 1;
+      nextBtn.classList.toggle('hidden', n === maxStep);
+      nextBtn.style.display = n === maxStep ? 'none' : '';
+      submitBtn.classList.toggle('hidden', n !== maxStep);
+      submitBtn.classList.toggle('inline-flex', n === maxStep);
+      window.scrollTo({ top: form.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
+    }
+
+    function setupStep2() {
+      const group = activeGroup();
+      form.querySelectorAll('[data-group]').forEach((g) => ((g as HTMLElement).hidden = (g as HTMLElement).dataset.group !== group));
+      const hint = form.querySelector('[data-detail-hint]') as HTMLElement;
+      if (group && hint) hint.textContent = groupHints[group];
+    }
+
+    function showFieldError(input: HTMLElement, show: boolean) {
+      const err = input.parentElement?.querySelector('[data-field-error]') as HTMLElement | null;
+      input.classList.toggle('border-red-400', show);
+      if (err) err.classList.toggle('hidden', !show);
+    }
+
+    function validateStep(n: number): boolean {
+      let ok = true;
+      if (n === 1) {
+        const checked = form.querySelector('input[name="tur"]:checked');
+        const err = form.querySelector('[data-error="tur"]') as HTMLElement;
+        if (!checked) { err.classList.remove('hidden'); ok = false; } else err.classList.add('hidden');
+      }
+      if (n === 2) {
+        const group = activeGroup();
+        form.querySelectorAll<HTMLInputElement>(`[data-group-field="${group}"][data-req]`).forEach((input) => {
+          const valid = input.value.trim() !== '';
+          showFieldError(input, !valid);
+          if (!valid) ok = false;
+        });
+      }
+      if (n === 3) {
+        form.querySelectorAll<HTMLInputElement>('[data-contact][data-req]').forEach((input) => {
+          let valid = input.type === 'checkbox' ? input.checked : input.value.trim() !== '';
+          if (valid && input.hasAttribute('data-email')) valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+          if (valid && input.hasAttribute('data-phone')) valid = input.value.replace(/\D/g, '').length >= 10;
+          if (input.type === 'checkbox') {
+            const err = form.querySelector('[data-error="kvkk"]') as HTMLElement;
+            err.classList.toggle('hidden', valid);
+          } else {
+            showFieldError(input, !valid);
+          }
+          if (!valid) ok = false;
+        });
+      }
+      return ok;
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (!validateStep(step)) return;
+      if (step === 1) setupStep2();
+      step = Math.min(step + 1, maxStep);
+      showStep(step);
+    });
+    prevBtn.addEventListener('click', () => {
+      step = Math.max(step - 1, 1);
+      showStep(step);
+    });
+
+    // clear errors on input
+    form.addEventListener('input', (e) => {
+      const t = e.target as HTMLElement;
+      if (t.hasAttribute('data-req') || t.hasAttribute('data-contact')) showFieldError(t, false);
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateStep(3)) return;
+      panels(1).hidden = true; panels(2).hidden = true; panels(3).hidden = true;
+      (form.querySelector('[data-form-nav]') as HTMLElement).hidden = true;
+      panels('success').hidden = false;
+      document.querySelector('[data-stepper]')?.querySelectorAll('[data-step-dot]').forEach((d) => {
+        d.className = 'grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 border-trust-500 bg-trust-500 text-sm font-bold text-white';
+      });
+      window.scrollTo({ top: form.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
+    });
+
+    // Preselect from query (?tur=kasko)
+    const params = new URLSearchParams(window.location.search);
+    const pre = params.get('tur');
+    if (pre) {
+      const radio = form.querySelector(`input[name="tur"][value="${pre}"]`) as HTMLInputElement | null;
+      if (radio) radio.checked = true;
+    }
+
+    showStep(1);
+  }
+</script>

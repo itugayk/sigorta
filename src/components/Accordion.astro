@@ -1,0 +1,59 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  items: { q: string; a: string }[];
+}
+const { items } = Astro.props;
+---
+<div class="mx-auto max-w-3xl divide-y divide-navy-100 rounded-2xl border border-navy-100 bg-white shadow-card" data-accordion data-reveal-group>
+  {items.map((item, i) => (
+    <div class="reveal" data-acc-item>
+      <button
+        type="button"
+        class="flex w-full items-center justify-between gap-4 px-5 py-5 text-left sm:px-6"
+        data-acc-trigger
+        aria-expanded={i === 0 ? 'true' : 'false'}
+      >
+        <span class="font-display text-base font-semibold text-navy-900 sm:text-lg">{item.q}</span>
+        <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-navy-50 text-navy-700 transition-transform duration-300" data-acc-icon>
+          <Icon name="plus" class="h-4 w-4" />
+        </span>
+      </button>
+      <div class="grid transition-all duration-300 ease-out" data-acc-panel style={i === 0 ? 'grid-template-rows:1fr' : 'grid-template-rows:0fr'}>
+        <div class="overflow-hidden">
+          <p class="px-5 pb-5 text-sm leading-relaxed text-navy-900/65 sm:px-6 sm:text-base">{item.a}</p>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
+<script>
+  document.querySelectorAll('[data-accordion]').forEach((acc) => {
+    const items = acc.querySelectorAll('[data-acc-item]');
+    items.forEach((item) => {
+      const trigger = item.querySelector('[data-acc-trigger]') as HTMLElement;
+      const panel = item.querySelector('[data-acc-panel]') as HTMLElement;
+      const icon = item.querySelector('[data-acc-icon]') as HTMLElement;
+      trigger?.addEventListener('click', () => {
+        const open = trigger.getAttribute('aria-expanded') === 'true';
+        // close siblings
+        items.forEach((other) => {
+          if (other === item) return;
+          other.querySelector('[data-acc-trigger]')?.setAttribute('aria-expanded', 'false');
+          (other.querySelector('[data-acc-panel]') as HTMLElement).style.gridTemplateRows = '0fr';
+          (other.querySelector('[data-acc-icon]') as HTMLElement)?.classList.remove('rotate-45', 'bg-trust-500', 'text-white');
+        });
+        trigger.setAttribute('aria-expanded', open ? 'false' : 'true');
+        panel.style.gridTemplateRows = open ? '0fr' : '1fr';
+        icon.classList.toggle('rotate-45', !open);
+        icon.classList.toggle('bg-trust-500', !open);
+        icon.classList.toggle('text-white', !open);
+      });
+      // initial icon state for first open item
+      if (trigger?.getAttribute('aria-expanded') === 'true') {
+        icon?.classList.add('rotate-45', 'bg-trust-500', 'text-white');
+      }
+    });
+  });
+</script>

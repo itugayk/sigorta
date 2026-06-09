@@ -1,0 +1,105 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+import { site, stats } from '../data/site';
+
+const values = [
+  { icon: 'balance', title: 'Tarafsızlık', desc: 'Tek bir şirkete bağlı değiliz. Her zaman sizin çıkarınıza en uygun teminatı öneririz.' },
+  { icon: 'shield-check', title: 'Güven', desc: '16 yıllık tecrübemizle, sözümüzün arkasında durur, taahhütlerimizi eksiksiz yerine getiririz.' },
+  { icon: 'support', title: 'Erişilebilirlik', desc: 'Hasar ve yenileme süreçlerinde tek bir telefonla yanınızdayız; sizi sürecin içinde tutarız.' },
+  { icon: 'advisor', title: 'Uzmanlık', desc: 'Alanında deneyimli danışman kadromuzla doğru bilgiyi sade biçimde aktarırız.' },
+];
+
+const timeline = [
+  { year: '2009', title: 'Kuruluş', desc: 'Güven Sigorta Acentesi, müşteri odaklı bağımsız acente vizyonuyla kuruldu.' },
+  { year: '2014', title: 'Şirket ağının genişlemesi', desc: '10’dan fazla sigorta şirketiyle anlaşma sağlanarak karşılaştırma kapsamı genişletildi.' },
+  { year: '2019', title: 'Dijital dönüşüm', desc: 'Online teklif ve poliçe takip süreçleri devreye alındı.' },
+  { year: '2026', title: 'Bugün', desc: '20+ şirket, 18.000+ mutlu müşteri ve %98 yenileme memnuniyeti.' },
+];
+---
+<Layout title="Hakkımızda" description="2009'dan bu yana bağımsız sigorta acentesi olarak müşterilerimize tarafsız ve uzman danışmanlık sunuyoruz.">
+  <section class="relative overflow-hidden bg-navy-900">
+    <div class="bg-grid absolute inset-0 opacity-25"></div>
+    <span class="absolute -right-20 -top-16 h-80 w-80 rounded-full bg-trust-500/15 blur-3xl"></span>
+    <div class="container-x relative py-16 sm:py-20">
+      <nav class="flex items-center gap-2 text-sm text-navy-300" aria-label="breadcrumb">
+        <a href="/" class="hover:text-white">Ana Sayfa</a><span>/</span><span class="text-white">Hakkımızda</span>
+      </nav>
+      <h1 class="mt-4 max-w-2xl font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl">16 yıldır güveninizi koruyoruz</h1>
+      <p class="mt-4 max-w-xl text-lg leading-relaxed text-navy-200">
+        {site.name}, bağımsız acente kimliğiyle müşterilerinin çıkarını her zaman ön planda tutar. Doğru teminatı, doğru fiyatla, doğru danışmanlıkla sunarız.
+      </p>
+    </div>
+  </section>
+
+  <!-- Story -->
+  <section class="container-x py-16 sm:py-20">
+    <div data-reveal-group class="grid gap-12 lg:grid-cols-2 lg:items-center">
+      <div class="reveal">
+        <span class="inline-flex items-center gap-2 rounded-full bg-trust-50 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-trust-600">
+          <span class="h-1.5 w-1.5 rounded-full bg-trust-500"></span> Hikâyemiz
+        </span>
+        <h2 class="mt-4 font-display text-3xl font-bold tracking-tight text-navy-900">Sigortayı karmaşık olmaktan çıkarıyoruz</h2>
+        <p class="mt-4 leading-relaxed text-navy-900/65">
+          Sigorta, çoğu zaman karmaşık bir dil ve sayısız seçenek demek. Biz bu karmaşayı sizin için sadeleştiriyoruz. 20'den fazla sigorta şirketinin tekliflerini tek noktada karşılaştırıp, ihtiyacınıza en uygun olanı tarafsızca öneriyoruz.
+        </p>
+        <p class="mt-4 leading-relaxed text-navy-900/65">
+          Amacımız sadece poliçe satmak değil; hasar anında, yenileme zamanında ve her sorunuzda yanınızda olan kalıcı bir güven ilişkisi kurmak.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="/teklif-al" class="inline-flex items-center gap-2 rounded-xl bg-trust-500 px-6 py-3.5 font-semibold text-white transition-colors hover:bg-trust-600">Teklif Al <Icon name="arrow-right" class="h-5 w-5" /></a>
+          <a href="/iletisim" class="inline-flex items-center gap-2 rounded-xl border border-navy-200 px-6 py-3.5 font-semibold text-navy-800 transition-colors hover:bg-navy-50">İletişim</a>
+        </div>
+      </div>
+      <div class="reveal grid grid-cols-2 gap-4">
+        {stats.map((s) => (
+          <div class="rounded-2xl border border-navy-100 bg-white p-6 text-center shadow-card">
+            <p class="font-display text-3xl font-extrabold text-navy-700 sm:text-4xl">
+              <span data-counter={s.value} data-suffix={s.suffix}>0{s.suffix}</span>
+            </p>
+            <p class="mt-1.5 text-sm font-medium text-navy-900/60">{s.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="bg-navy-50/60 py-16 sm:py-20">
+    <div class="container-x">
+      <SectionHeader eyebrow="Değerlerimiz" title="Bizi biz yapan ilkeler" />
+      <div data-reveal-group class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {values.map((v) => (
+          <div class="reveal rounded-2xl border border-navy-100 bg-white p-6 shadow-card">
+            <span class="grid h-12 w-12 place-items-center rounded-xl bg-trust-50 text-trust-600"><Icon name={v.icon} class="h-6 w-6" /></span>
+            <h3 class="mt-4 font-display text-lg font-bold text-navy-900">{v.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-navy-900/60">{v.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="container-x py-16 sm:py-20">
+    <SectionHeader eyebrow="Yolculuğumuz" title="Bugüne nasıl geldik" />
+    <div data-reveal-group class="mx-auto mt-12 max-w-3xl">
+      {timeline.map((t, i) => (
+        <div class="reveal relative flex gap-6 pb-10 last:pb-0">
+          <div class="flex flex-col items-center">
+            <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-navy-700 font-display text-sm font-bold text-white">{t.year}</span>
+            {i < timeline.length - 1 && <span class="mt-2 w-px flex-1 bg-navy-200"></span>}
+          </div>
+          <div class="pt-1.5">
+            <h3 class="font-display text-lg font-bold text-navy-900">{t.title}</h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-navy-900/60">{t.desc}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <div class="pb-8"><CtaBanner /></div>
+</Layout>

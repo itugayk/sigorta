@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import Accordion from '../components/Accordion.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+import { faqs, policies } from '../data/site';
+
+// Build grouped FAQ: general + per-policy
+const generalLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [...faqs, ...policies.flatMap((p) => p.faq)].map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<Layout title="Sık Sorulan Sorular" description="Sigorta, teklif, poliçe ve hasar süreçleriyle ilgili en sık sorulan soruların yanıtları." jsonLd={generalLd}>
+  <section class="relative overflow-hidden bg-navy-900">
+    <div class="bg-grid absolute inset-0 opacity-25"></div>
+    <span class="absolute -right-20 -top-16 h-80 w-80 rounded-full bg-trust-500/15 blur-3xl"></span>
+    <div class="container-x relative py-16 sm:py-20">
+      <nav class="flex items-center gap-2 text-sm text-navy-300" aria-label="breadcrumb">
+        <a href="/" class="hover:text-white">Ana Sayfa</a><span>/</span><span class="text-white">SSS</span>
+      </nav>
+      <h1 class="mt-4 font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl">Sık sorulan sorular</h1>
+      <p class="mt-4 max-w-xl text-lg text-navy-200">Aradığınız yanıt burada yoksa, danışmanlarımız bir telefon kadar yakınınızda.</p>
+    </div>
+  </section>
+
+  <!-- General -->
+  <section class="container-x py-16 sm:py-20">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="font-display text-2xl font-bold text-navy-900">Genel sorular</h2>
+      <div class="mt-6"><Accordion items={faqs} /></div>
+    </div>
+  </section>
+
+  <!-- Per policy -->
+  <section class="bg-navy-50/60 py-16 sm:py-20">
+    <div class="container-x">
+      <div class="mx-auto max-w-3xl text-center">
+        <h2 class="font-display text-2xl font-bold text-navy-900 sm:text-3xl">Sigorta türüne göre sorular</h2>
+        <p class="mt-3 text-navy-900/60">Her sigorta türü hakkında en çok merak edilenler.</p>
+      </div>
+      <div class="mx-auto mt-10 max-w-3xl space-y-10">
+        {policies.map((p) => (
+          <div>
+            <div class="mb-4 flex items-center gap-3">
+              <span class:list={['grid h-10 w-10 place-items-center rounded-xl text-white', p.accent === 'trust' ? 'bg-trust-500' : 'bg-navy-700']}>
+                <Icon name={p.icon} class="h-5 w-5" />
+              </span>
+              <h3 class="font-display text-lg font-bold text-navy-900">{p.title}</h3>
+            </div>
+            <Accordion items={p.faq} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="pb-8"><CtaBanner title="Sorunuzu yanıtlayalım" subtitle="Aklınıza takılan her şey için uzman danışmanlarımız hazır." /></div>
+</Layout>

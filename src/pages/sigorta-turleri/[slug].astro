@@ -1,0 +1,124 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import Accordion from '../../components/Accordion.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import { policies } from '../../data/site';
+
+export function getStaticPaths() {
+  return policies.map((policy) => ({
+    params: { slug: policy.slug },
+    props: { policy },
+  }));
+}
+
+const { policy } = Astro.props;
+const isTrust = policy.accent === 'trust';
+const others = policies.filter((p) => p.slug !== policy.slug).slice(0, 3);
+
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: policy.faq.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<Layout title={policy.title} description={policy.description} jsonLd={ld}>
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-navy-900">
+    <div class="bg-grid absolute inset-0 opacity-25"></div>
+    <span class:list={['absolute -right-24 -top-20 h-96 w-96 rounded-full blur-3xl', isTrust ? 'bg-trust-500/20' : 'bg-navy-600/40']}></span>
+    <div class="container-x relative grid items-center gap-10 py-16 sm:py-20 lg:grid-cols-2">
+      <div>
+        <nav class="flex flex-wrap items-center gap-2 text-sm text-navy-300" aria-label="breadcrumb">
+          <a href="/" class="hover:text-white">Ana Sayfa</a><span>/</span>
+          <a href="/sigorta-turleri" class="hover:text-white">Sigorta Türleri</a><span>/</span>
+          <span class="text-white">{policy.title}</span>
+        </nav>
+        <div class="mt-5 flex items-center gap-4">
+          <span class:list={['grid h-16 w-16 place-items-center rounded-2xl text-white', isTrust ? 'bg-trust-500' : 'bg-navy-700']}>
+            <Icon name={policy.icon} class="h-9 w-9" />
+          </span>
+          <h1 class="font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl">{policy.title}</h1>
+        </div>
+        <p class="mt-5 max-w-xl text-lg font-medium text-trust-300">{policy.tagline}</p>
+        <p class="mt-3 max-w-xl leading-relaxed text-navy-200">{policy.description}</p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href={`/teklif-al?tur=${policy.slug}`} class="inline-flex items-center justify-center gap-2 rounded-xl bg-trust-500 px-6 py-3.5 font-semibold text-white shadow-lg shadow-trust-500/25 transition-colors hover:bg-trust-400">
+            {policy.title} Teklifi Al <Icon name="arrow-right" class="h-5 w-5" />
+          </a>
+          <a href="/iletisim" class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 font-semibold text-white transition-colors hover:bg-white/10">
+            Danışmana Sor
+          </a>
+        </div>
+      </div>
+
+      <!-- Highlights card -->
+      <div class="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-sm sm:p-8">
+        <p class="font-display text-lg font-bold text-white">Öne çıkan avantajlar</p>
+        <ul class="mt-5 space-y-3">
+          {policy.highlights.map((h) => (
+            <li class="flex items-start gap-3 text-navy-100">
+              <span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-trust-500/20 text-trust-400"><Icon name="check" class="h-4 w-4" /></span>
+              <span class="text-sm leading-relaxed">{h}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coverage -->
+  <section class="container-x py-16 sm:py-20">
+    <div data-reveal-group class="max-w-2xl">
+      <span class="reveal inline-flex items-center gap-2 rounded-full bg-trust-50 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-trust-600">
+        <span class="h-1.5 w-1.5 rounded-full bg-trust-500"></span> Teminat Kapsamı
+      </span>
+      <h2 class="reveal mt-4 font-display text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">Nelere karşı koruma sağlar?</h2>
+    </div>
+    <div data-reveal-group class="mt-10 grid gap-5 md:grid-cols-3">
+      {policy.coverage.map((c) => (
+        <div class="reveal rounded-2xl border border-navy-100 bg-white p-6 shadow-card">
+          <span class="grid h-11 w-11 place-items-center rounded-xl bg-navy-50 text-navy-700"><Icon name="shield-check" class="h-6 w-6" /></span>
+          <h3 class="mt-4 font-display text-lg font-bold text-navy-900">{c.title}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-navy-900/60">{c.desc}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="bg-navy-50/60 py-16 sm:py-20">
+    <div class="container-x">
+      <div data-reveal-group class="mx-auto max-w-2xl text-center">
+        <h2 class="reveal font-display text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">{policy.title} hakkında sorular</h2>
+        <p class="reveal mt-3 text-navy-900/60">Merak ettiklerinizi yanıtladık.</p>
+      </div>
+      <div class="mt-10"><Accordion items={policy.faq} /></div>
+    </div>
+  </section>
+
+  <!-- Other policies -->
+  <section class="container-x py-16 sm:py-20">
+    <h2 class="font-display text-2xl font-bold text-navy-900">Diğer sigorta türleri</h2>
+    <div data-reveal-group class="mt-8 grid gap-5 sm:grid-cols-3">
+      {others.map((p) => (
+        <a href={`/sigorta-turleri/${p.slug}`} class="reveal group flex items-center gap-4 rounded-2xl border border-navy-100 bg-white p-5 shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover">
+          <span class:list={['grid h-12 w-12 shrink-0 place-items-center rounded-xl text-white', p.accent === 'trust' ? 'bg-trust-500' : 'bg-navy-700']}>
+            <Icon name={p.icon} class="h-6 w-6" />
+          </span>
+          <span>
+            <span class="block font-display font-bold text-navy-900">{p.title}</span>
+            <span class="block text-sm text-navy-900/55">{p.short}</span>
+          </span>
+          <Icon name="arrow-right" class="ml-auto h-5 w-5 text-trust-600 transition-transform group-hover:translate-x-1" />
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <div class="pb-8"><CtaBanner title={`${policy.title} için en uygun teklifi alın`} /></div>
+</Layout>

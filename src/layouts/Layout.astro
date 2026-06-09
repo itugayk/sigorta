@@ -1,0 +1,200 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  jsonLd?: Record<string, any> | Record<string, any>[];
+}
+
+const {
+  title,
+  description = site.description,
+  jsonLd,
+} = Astro.props;
+
+const pageTitle = title ? `${title} · ${site.shortName}` : `${site.name} — ${site.tagline}`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+
+// Default org JSON-LD always present
+const orgLd = {
+  '@context': 'https://schema.org',
+  '@type': 'InsuranceAgency',
+  name: site.name,
+  description: site.description,
+  url: site.url,
+  telephone: site.phoneHref.replace('tel:', ''),
+  email: site.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Bağdat Caddesi No: 250',
+    addressLocality: 'Kadıköy',
+    addressRegion: 'İstanbul',
+    addressCountry: 'TR',
+  },
+  openingHours: 'Mo-Sa 09:00-19:00',
+  priceRange: '$$',
+  areaServed: 'TR',
+};
+
+const ldBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#1e3a8a" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="tr_TR" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(orgLd)} />
+    {ldBlocks.map((block) => (
+      <script type="application/ld+json" set:html={JSON.stringify(block)} />
+    ))}
+  </head>
+  <body class="min-h-screen bg-white antialiased">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-navy-700 focus:px-4 focus:py-2 focus:text-white">İçeriğe geç</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Floating WhatsApp -->
+    <a
+      href={site.whatsappHref}
+      target="_blank"
+      rel="noopener"
+      aria-label="WhatsApp ile yazın"
+      class="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-trust-500 text-white shadow-lg shadow-trust-500/30 transition-transform hover:scale-110"
+    >
+      <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2.05 22l5.27-1.38a9.86 9.86 0 0 0 4.71 1.2h.01c5.46 0 9.9-4.44 9.9-9.9 0-2.64-1.03-5.13-2.9-7.01zm-7 15.22h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.12.82.83-3.05-.2-.31a8.18 8.18 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.69 8.24-8.23 8.24zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29z"/></svg>
+    </a>
+
+    <!-- Global GSAP animation engine (IntersectionObserver-triggered for reliability) -->
+    <script>
+      import { gsap } from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+      gsap.registerPlugin(ScrollTrigger);
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function init() {
+        // Reduced motion: reveal everything instantly, set counters to final value.
+        if (prefersReduced) {
+          document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
+          document.querySelectorAll<HTMLElement>('[data-counter]').forEach((el) => {
+            const target = parseFloat(el.dataset.counter ?? '0');
+            el.textContent = target.toLocaleString('tr-TR') + (el.dataset.suffix ?? '');
+          });
+          return;
+        }
+
+        // ---- Scroll reveal (single + staggered groups) via IntersectionObserver ----
+        const groups = new Map<Element, HTMLElement[]>();
+        document.querySelectorAll<HTMLElement>('.reveal').forEach((el) => {
+          const parent = el.closest('[data-reveal-group]') ?? el;
+          if (!groups.has(parent)) groups.set(parent, []);
+          groups.get(parent)!.push(el);
+        });
+
+        const revealIO = new IntersectionObserver(
+          (entries, obs) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const els = groups.get(entry.target) ?? [];
+              gsap.to(els, {
+                opacity: 1,
+                y: 0,
+                duration: 0.7,
+                ease: 'power3.out',
+                stagger: els.length > 1 ? 0.09 : 0,
+                onComplete: () => els.forEach((e) => e.classList.add('is-in')),
+              });
+              obs.unobserve(entry.target);
+            });
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }
+        );
+        groups.forEach((_els, parent) => revealIO.observe(parent));
+
+        // ---- Animated counters ----
+        const counterIO = new IntersectionObserver(
+          (entries, obs) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const el = entry.target as HTMLElement;
+              const target = parseFloat(el.dataset.counter ?? '0');
+              const suffix = el.dataset.suffix ?? '';
+              const obj = { val: 0 };
+              gsap.to(obj, {
+                val: target,
+                duration: 2,
+                ease: 'power2.out',
+                onUpdate: () => {
+                  el.textContent = Math.round(obj.val).toLocaleString('tr-TR') + suffix;
+                },
+              });
+              obs.unobserve(el);
+            });
+          },
+          { threshold: 0.4 }
+        );
+        document.querySelectorAll<HTMLElement>('[data-counter]').forEach((el) => counterIO.observe(el));
+
+        // ---- Subtle parallax (cosmetic; ScrollTrigger scrub) ----
+        document.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
+          const speed = parseFloat(el.dataset.parallax ?? '0.2');
+          gsap.to(el, {
+            yPercent: speed * 100,
+            ease: 'none',
+            scrollTrigger: { trigger: el, start: 'top top', end: 'bottom top', scrub: true },
+          });
+        });
+
+        // Safety net: if anything is still hidden after load (e.g. IO edge cases), reveal it.
+        window.setTimeout(() => {
+          document.querySelectorAll<HTMLElement>('.reveal:not(.is-in)').forEach((el) => {
+            const r = el.getBoundingClientRect();
+            if (r.top < window.innerHeight && r.bottom > 0) {
+              gsap.set(el, { opacity: 1, y: 0 });
+              el.classList.add('is-in');
+            }
+          });
+        }, 1200);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,165 @@
+---
+import { site, policies } from '../data/site';
+import Icon from './Icon.astro';
+
+const nav = [
+  { label: 'Ana Sayfa', href: '/' },
+  { label: 'Sigorta Türleri', href: '/sigorta-turleri', mega: true },
+  { label: 'Hakkımızda', href: '/hakkimizda' },
+  { label: 'SSS', href: '/sss' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'İletişim', href: '/iletisim' },
+];
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+---
+<header
+  id="site-header"
+  class="fixed top-0 inset-x-0 z-50 transition-all duration-300"
+  data-header
+>
+  <div class="container-x">
+    <div
+      class="mt-3 flex items-center justify-between gap-4 rounded-2xl border border-navy-100 bg-white/85 px-4 py-3 shadow-card backdrop-blur-md transition-all duration-300"
+      data-header-bar
+    >
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2.5 shrink-0" aria-label={site.name}>
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-navy-700 text-white">
+          <Icon name="shield-check" class="h-6 w-6" />
+        </span>
+        <span class="leading-tight">
+          <span class="block font-display text-[15px] font-bold text-navy-900">Güven Sigorta</span>
+          <span class="block text-[11px] font-medium tracking-wide text-trust-600">ACENTESİ</span>
+        </span>
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden items-center gap-1 lg:flex" aria-label="Ana menü">
+        {nav.map((item) => (
+          <div class="group relative">
+            <a
+              href={item.href}
+              class:list={[
+                'flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                isActive(item.href)
+                  ? 'text-navy-700'
+                  : 'text-navy-900/70 hover:text-navy-700',
+              ]}
+            >
+              {item.label}
+              {item.mega && (
+                <svg class="h-3.5 w-3.5 transition-transform group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              )}
+            </a>
+            {item.mega && (
+              <div class="invisible absolute left-1/2 top-full w-[34rem] -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                <div class="grid grid-cols-2 gap-1 rounded-2xl border border-navy-100 bg-white p-3 shadow-card-hover">
+                  {policies.map((p) => (
+                    <a href={`/sigorta-turleri/${p.slug}`} class="flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-navy-50">
+                      <span class:list={['grid h-9 w-9 shrink-0 place-items-center rounded-lg', p.accent === 'trust' ? 'bg-trust-50 text-trust-600' : 'bg-navy-50 text-navy-700']}>
+                        <Icon name={p.icon} class="h-5 w-5" />
+                      </span>
+                      <span>
+                        <span class="block text-sm font-semibold text-navy-900">{p.title}</span>
+                        <span class="block text-xs text-navy-900/55">{p.short}</span>
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a href={site.phoneHref} class="hidden items-center gap-2 text-sm font-semibold text-navy-800 md:flex">
+          <Icon name="phone" class="h-4 w-4 text-trust-600" />
+          {site.phone}
+        </a>
+        <a
+          href="/teklif-al"
+          class="hidden rounded-xl bg-trust-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-trust-600 hover:shadow-md sm:inline-block"
+        >
+          Hemen Teklif Al
+        </a>
+        <!-- Mobile toggle -->
+        <button
+          type="button"
+          class="grid h-10 w-10 place-items-center rounded-xl border border-navy-100 text-navy-800 lg:hidden"
+          data-menu-toggle
+          aria-label="Menüyü aç"
+          aria-expanded="false"
+        >
+          <Icon name="menu" class="h-6 w-6" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div
+    class="fixed inset-0 z-40 hidden bg-navy-950/40 backdrop-blur-sm lg:hidden"
+    data-menu-overlay
+  >
+    <div class="absolute right-0 top-0 h-full w-[88%] max-w-sm translate-x-full bg-white shadow-2xl transition-transform duration-300" data-menu-panel>
+      <div class="flex items-center justify-between border-b border-navy-100 p-5">
+        <span class="font-display font-bold text-navy-900">Menü</span>
+        <button type="button" class="grid h-10 w-10 place-items-center rounded-xl border border-navy-100 text-navy-800" data-menu-close aria-label="Menüyü kapat">
+          <Icon name="close" class="h-5 w-5" />
+        </button>
+      </div>
+      <nav class="flex flex-col p-3" aria-label="Mobil menü">
+        {nav.map((item) => (
+          <a href={item.href} class:list={['rounded-xl px-4 py-3 text-base font-medium', isActive(item.href) ? 'bg-navy-50 text-navy-700' : 'text-navy-900/80']}>{item.label}</a>
+        ))}
+        <div class="mt-3 grid gap-2 border-t border-navy-100 pt-4">
+          <a href="/teklif-al" class="rounded-xl bg-trust-500 px-4 py-3 text-center text-base font-semibold text-white">Hemen Teklif Al</a>
+          <a href={site.phoneHref} class="flex items-center justify-center gap-2 rounded-xl border border-navy-200 px-4 py-3 text-base font-semibold text-navy-800">
+            <Icon name="phone" class="h-4 w-4 text-trust-600" /> {site.phone}
+          </a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+<div class="h-[76px]"></div>
+
+<script>
+  const toggle = document.querySelector('[data-menu-toggle]');
+  const overlay = document.querySelector('[data-menu-overlay]');
+  const panel = document.querySelector('[data-menu-panel]');
+  const closeBtn = document.querySelector('[data-menu-close]');
+
+  function openMenu() {
+    overlay?.classList.remove('hidden');
+    requestAnimationFrame(() => panel?.classList.remove('translate-x-full'));
+    toggle?.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    panel?.classList.add('translate-x-full');
+    toggle?.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    setTimeout(() => overlay?.classList.add('hidden'), 300);
+  }
+  toggle?.addEventListener('click', openMenu);
+  closeBtn?.addEventListener('click', closeMenu);
+  overlay?.addEventListener('click', (e) => { if (e.target === overlay) closeMenu(); });
+  panel?.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu));
+
+  // Shrink/elevate header on scroll
+  const bar = document.querySelector('[data-header-bar]');
+  const onScroll = () => {
+    if (window.scrollY > 16) {
+      bar?.classList.add('!py-2', 'shadow-card-hover');
+    } else {
+      bar?.classList.remove('!py-2', 'shadow-card-hover');
+    }
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+</script>

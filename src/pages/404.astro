@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+---
+<Layout title="Sayfa bulunamadı">
+  <section class="container-x grid min-h-[60vh] place-items-center py-20 text-center">
+    <div>
+      <span class="mx-auto grid h-20 w-20 place-items-center rounded-2xl bg-navy-50 text-navy-700"><Icon name="shield" class="h-10 w-10" /></span>
+      <p class="mt-6 font-display text-6xl font-extrabold text-navy-900">404</p>
+      <h1 class="mt-2 font-display text-2xl font-bold text-navy-900">Sayfa bulunamadı</h1>
+      <p class="mx-auto mt-3 max-w-md text-navy-900/60">Aradığınız sayfa taşınmış veya hiç var olmamış olabilir. Sizi güvenli bir yere yönlendirelim.</p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="/" class="inline-flex items-center gap-2 rounded-xl bg-trust-500 px-6 py-3.5 font-semibold text-white transition-colors hover:bg-trust-600">Ana Sayfa</a>
+        <a href="/teklif-al" class="inline-flex items-center gap-2 rounded-xl border border-navy-200 px-6 py-3.5 font-semibold text-navy-800 transition-colors hover:bg-navy-50">Teklif Al <Icon name="arrow-right" class="h-5 w-5" /></a>
+      </div>
+    </div>
+  </section>
+</Layout>

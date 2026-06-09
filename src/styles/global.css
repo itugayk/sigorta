@@ -1,0 +1,98 @@
+@import 'tailwindcss';
+
+/* ===========================================================
+   Güven Sigorta Acentesi — Design Tokens (Tailwind v4)
+   =========================================================== */
+@theme {
+  /* Brand — güven veren lacivert + canlı yeşil aksan */
+  --color-navy-50: #eef2ff;
+  --color-navy-100: #e0e7ff;
+  --color-navy-200: #c7d2fe;
+  --color-navy-300: #a5b4fc;
+  --color-navy-400: #6178e0;
+  --color-navy-500: #3b53c4;
+  --color-navy-600: #2a3fa0;
+  --color-navy-700: #1e3a8a;
+  --color-navy-800: #1b2f6e;
+  --color-navy-900: #172554;
+  --color-navy-950: #0f172a;
+
+  --color-trust-50: #f0fdf4;
+  --color-trust-100: #dcfce7;
+  --color-trust-200: #bbf7d0;
+  --color-trust-300: #86efac;
+  --color-trust-400: #4ade80;
+  --color-trust-500: #16a34a;
+  --color-trust-600: #15803d;
+  --color-trust-700: #166534;
+
+  /* Fonts */
+  --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Shadows */
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -8px rgb(30 58 138 / 0.12);
+  --shadow-card-hover: 0 8px 40px -8px rgb(30 58 138 / 0.25);
+}
+
+/* Base */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-navy-950);
+  background-color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Reduced motion respect — GSAP also checks this */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Reusable utilities */
+@utility container-x {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+/* Scroll-reveal initial state — GSAP toggles .is-in */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  will-change: transform, opacity;
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Subtle dotted/grid backdrop helper */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(30 58 138 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(30 58 138 / 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Focus visibility for accessibility */
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--color-trust-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

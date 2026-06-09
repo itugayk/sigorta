@@ -1,0 +1,155 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+
+const cards = [
+  { icon: 'phone', title: 'Telefon', value: site.phone, href: site.phoneHref, note: site.workingHours },
+  { icon: 'whatsapp', title: 'WhatsApp', value: site.whatsapp, href: site.whatsappHref, note: 'Hızlı dönüş' },
+  { icon: 'mail', title: 'E-posta', value: site.email, href: `mailto:${site.email}`, note: '7/24 yazabilirsiniz' },
+  { icon: 'pin', title: 'Adres', value: site.address, href: '#harita', note: 'Kadıköy / İstanbul' },
+];
+---
+<Layout title="İletişim" description="Güven Sigorta Acentesi ile iletişime geçin. Telefon, e-posta, WhatsApp ve ofis adresimiz.">
+  <section class="relative overflow-hidden bg-navy-900">
+    <div class="bg-grid absolute inset-0 opacity-25"></div>
+    <span class="absolute -right-20 -top-16 h-80 w-80 rounded-full bg-trust-500/15 blur-3xl"></span>
+    <div class="container-x relative py-16 sm:py-20">
+      <nav class="flex items-center gap-2 text-sm text-navy-300" aria-label="breadcrumb">
+        <a href="/" class="hover:text-white">Ana Sayfa</a><span>/</span><span class="text-white">İletişim</span>
+      </nav>
+      <h1 class="mt-4 font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl">Bize ulaşın</h1>
+      <p class="mt-4 max-w-xl text-lg text-navy-200">Sorularınız, teklif talepleriniz ve hasar süreçleriniz için buradayız.</p>
+    </div>
+  </section>
+
+  <!-- Contact cards -->
+  <section class="container-x py-16 sm:py-20">
+    <div data-reveal-group class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {cards.map((c) => (
+        <a href={c.href} class="reveal group rounded-2xl border border-navy-100 bg-white p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover">
+          <span class="grid h-12 w-12 place-items-center rounded-xl bg-trust-50 text-trust-600 transition-colors group-hover:bg-trust-500 group-hover:text-white"><Icon name={c.icon} class="h-6 w-6" /></span>
+          <h3 class="mt-4 font-display text-sm font-semibold uppercase tracking-wider text-navy-900/50">{c.title}</h3>
+          <p class="mt-1 font-display font-bold text-navy-900">{c.value}</p>
+          <p class="mt-1 text-sm text-navy-900/55">{c.note}</p>
+        </a>
+      ))}
+    </div>
+
+    <!-- Form + info -->
+    <div class="mt-12 grid gap-8 lg:grid-cols-5">
+      <!-- Form -->
+      <div data-reveal-group class="reveal lg:col-span-3">
+        <div class="rounded-3xl border border-navy-100 bg-white p-6 shadow-card sm:p-8">
+          <h2 class="font-display text-2xl font-bold text-navy-900">Mesaj gönderin</h2>
+          <p class="mt-1 text-sm text-navy-900/55">Formu doldurun, en kısa sürede size dönelim.</p>
+          <form id="contact-form" novalidate class="mt-6 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="c-ad">Ad Soyad</label>
+              <input id="c-ad" name="ad" type="text" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Lütfen adınızı girin.</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-navy-900" for="c-tel">Telefon</label>
+              <input id="c-tel" name="tel" type="tel" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req data-phone />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Geçerli bir telefon girin.</p>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="text-sm font-medium text-navy-900" for="c-eposta">E-posta</label>
+              <input id="c-eposta" name="eposta" type="email" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req data-email />
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Geçerli bir e-posta girin.</p>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="text-sm font-medium text-navy-900" for="c-konu">Konu</label>
+              <select id="c-konu" name="konu" class="mt-1.5 w-full rounded-xl border border-navy-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-trust-500">
+                <option>Teklif talebi</option>
+                <option>Mevcut poliçem hakkında</option>
+                <option>Hasar süreci</option>
+                <option>Diğer</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="text-sm font-medium text-navy-900" for="c-mesaj">Mesajınız</label>
+              <textarea id="c-mesaj" name="mesaj" rows="4" class="mt-1.5 w-full rounded-xl border border-navy-200 px-4 py-2.5 text-sm outline-none transition focus:border-trust-500" data-req></textarea>
+              <p class="mt-1 hidden text-xs font-medium text-red-600" data-field-error>Lütfen mesajınızı yazın.</p>
+            </div>
+            <div class="sm:col-span-2 flex items-center justify-between gap-3">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-trust-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-trust-600">
+                Gönder <Icon name="arrow-right" class="h-4 w-4" />
+              </button>
+              <p class="hidden items-center gap-2 text-sm font-medium text-trust-600 sm:flex" data-success-msg>
+                <Icon name="check" class="h-4 w-4" /> Mesajınız alındı! (demo)
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Info / map -->
+      <div data-reveal-group class="reveal lg:col-span-2">
+        <div id="harita" class="overflow-hidden rounded-3xl border border-navy-100 shadow-card">
+          <div class="relative h-56 bg-navy-800">
+            <div class="bg-grid absolute inset-0 opacity-30"></div>
+            <div class="relative grid h-full place-items-center text-center">
+              <div>
+                <span class="mx-auto grid h-12 w-12 place-items-center rounded-full bg-trust-500 text-white"><Icon name="pin" class="h-6 w-6" /></span>
+                <p class="mt-3 font-display font-semibold text-white">{site.address}</p>
+                <p class="text-sm text-navy-300">(Harita yer tutucu)</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-4 bg-white p-6">
+            <div class="flex items-center gap-3">
+              <Icon name="clock" class="h-5 w-5 text-trust-600" />
+              <div>
+                <p class="text-sm font-semibold text-navy-900">Çalışma saatleri</p>
+                <p class="text-sm text-navy-900/60">{site.workingHours}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <Icon name="phone" class="h-5 w-5 text-trust-600" />
+              <div>
+                <p class="text-sm font-semibold text-navy-900">Telefon</p>
+                <a href={site.phoneHref} class="text-sm text-navy-900/60 hover:text-trust-600">{site.phone}</a>
+              </div>
+            </div>
+            <a href="/teklif-al" class="flex items-center justify-center gap-2 rounded-xl bg-navy-700 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-navy-800">
+              Online Teklif Al <Icon name="arrow-right" class="h-4 w-4" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  if (form) {
+    const showErr = (input: HTMLInputElement, show: boolean) => {
+      const err = input.parentElement?.querySelector('[data-field-error]') as HTMLElement | null;
+      input.classList.toggle('border-red-400', show);
+      err?.classList.toggle('hidden', !show);
+    };
+    form.addEventListener('input', (e) => {
+      const t = e.target as HTMLInputElement;
+      if (t.hasAttribute('data-req')) showErr(t, false);
+    });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let ok = true;
+      form.querySelectorAll<HTMLInputElement>('[data-req]').forEach((input) => {
+        let valid = input.value.trim() !== '';
+        if (valid && input.hasAttribute('data-email')) valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+        if (valid && input.hasAttribute('data-phone')) valid = input.value.replace(/\D/g, '').length >= 10;
+        showErr(input, !valid);
+        if (!valid) ok = false;
+      });
+      if (!ok) return;
+      form.reset();
+      const msg = form.querySelector('[data-success-msg]') as HTMLElement;
+      msg.classList.remove('hidden');
+      msg.classList.add('flex');
+    });
+  }
+</script>

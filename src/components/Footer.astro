@@ -1,0 +1,91 @@
+---
+import { site, policies } from '../data/site';
+import Icon from './Icon.astro';
+
+const year = 2026;
+---
+<footer class="mt-24 bg-navy-950 text-navy-100">
+  <div class="container-x py-16">
+    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+      <!-- Brand -->
+      <div class="lg:col-span-1">
+        <a href="/" class="flex items-center gap-2.5">
+          <span class="grid h-10 w-10 place-items-center rounded-xl bg-trust-500 text-white">
+            <Icon name="shield-check" class="h-6 w-6" />
+          </span>
+          <span class="leading-tight">
+            <span class="block font-display text-[15px] font-bold text-white">Güven Sigorta</span>
+            <span class="block text-[11px] font-medium tracking-wide text-trust-400">ACENTESİ</span>
+          </span>
+        </a>
+        <p class="mt-4 max-w-xs text-sm leading-relaxed text-navy-300">
+          {site.tagline}. {site.foundedYear}'dan bu yana bağımsız acente olarak yanınızdayız.
+        </p>
+        <div class="mt-5 flex gap-2">
+          {Object.entries(site.social).map(([k, href]) => (
+            <a href={href} target="_blank" rel="noopener" aria-label={k} class="grid h-9 w-9 place-items-center rounded-lg bg-white/5 text-navy-200 transition-colors hover:bg-trust-500 hover:text-white">
+              <span class="text-xs font-semibold uppercase">{k[0]}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Policies -->
+      <div>
+        <h3 class="font-display text-sm font-semibold uppercase tracking-wider text-white">Sigorta Türleri</h3>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          {policies.map((p) => (
+            <li>
+              <a href={`/sigorta-turleri/${p.slug}`} class="text-navy-300 transition-colors hover:text-trust-400">{p.title}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Links -->
+      <div>
+        <h3 class="font-display text-sm font-semibold uppercase tracking-wider text-white">Kurumsal</h3>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li><a href="/hakkimizda" class="text-navy-300 transition-colors hover:text-trust-400">Hakkımızda</a></li>
+          <li><a href="/teklif-al" class="text-navy-300 transition-colors hover:text-trust-400">Teklif Al</a></li>
+          <li><a href="/sss" class="text-navy-300 transition-colors hover:text-trust-400">Sık Sorulan Sorular</a></li>
+          <li><a href="/blog" class="text-navy-300 transition-colors hover:text-trust-400">Blog</a></li>
+          <li><a href="/iletisim" class="text-navy-300 transition-colors hover:text-trust-400">İletişim</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h3 class="font-display text-sm font-semibold uppercase tracking-wider text-white">İletişim</h3>
+        <ul class="mt-4 space-y-3 text-sm">
+          <li class="flex items-start gap-3">
+            <Icon name="pin" class="mt-0.5 h-4 w-4 shrink-0 text-trust-400" />
+            <span class="text-navy-300">{site.address}</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <Icon name="phone" class="h-4 w-4 shrink-0 text-trust-400" />
+            <a href={site.phoneHref} class="text-navy-300 transition-colors hover:text-trust-400">{site.phone}</a>
+          </li>
+          <li class="flex items-center gap-3">
+            <Icon name="mail" class="h-4 w-4 shrink-0 text-trust-400" />
+            <a href={`mailto:${site.email}`} class="text-navy-300 transition-colors hover:text-trust-400">{site.email}</a>
+          </li>
+          <li class="flex items-center gap-3">
+            <Icon name="clock" class="h-4 w-4 shrink-0 text-trust-400" />
+            <span class="text-navy-300">{site.workingHours}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="container-x flex flex-col items-center justify-between gap-3 py-6 text-xs text-navy-400 sm:flex-row">
+      <p>© {year} {site.name}. Tüm hakları saklıdır.</p>
+      <p class="flex items-center gap-2">
+        <Icon name="shield" class="h-3.5 w-3.5 text-trust-400" />
+        Demo amaçlı tasarlanmıştır · dijifa.com
+      </p>
+    </div>
+  </div>
+</footer>
