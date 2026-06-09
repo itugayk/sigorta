@@ -71,13 +71,15 @@ h1, h2, h3, h4, h5, .font-display {
   padding-inline: 1.25rem;
 }
 
-/* Scroll-reveal initial state — GSAP toggles .is-in */
-.reveal {
+/* Scroll-reveal initial state — GSAP toggles .is-in.
+   Hidden state ONLY applies when JS is active (html.js), so if the
+   animation engine never runs the content stays fully visible. */
+html.js .reveal {
   opacity: 0;
   transform: translateY(28px);
   will-change: transform, opacity;
 }
-.reveal.is-in {
+html.js .reveal.is-in {
   opacity: 1;
   transform: none;
 }

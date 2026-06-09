@@ -48,6 +48,15 @@ const ldBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Enable reveal hidden-state only when JS runs; hard fallback reveals
+         everything if the animation module fails to load (no invisible content). -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      window.__revealFallback = window.setTimeout(function () {
+        document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-in'); });
+      }, 2600);
+    </script>
     <meta name="generator" content={Astro.generator} />
 
     <title>{pageTitle}</title>
@@ -106,6 +115,10 @@ const ldBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       function init() {
+        // The engine is running — cancel the no-JS / load-failure fallback.
+        const fb = (window as any).__revealFallback;
+        if (fb) window.clearTimeout(fb);
+
         // Reduced motion: reveal everything instantly, set counters to final value.
         if (prefersReduced) {
           document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
